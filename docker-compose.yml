@@ -2,12 +2,12 @@ version: '3.3'
 
 services:
   nginx:
-    image: nginx
+    dockerfile: ./srcs/nginx
     ports:
        - "8080:80"
        - "443:443"
   mariadb:
-    image: mariadb:10.3
+    dockerfile: ./srcs/mariadb
     volumes:
         - mariadb:/var/lib/mariadb
     environment:
