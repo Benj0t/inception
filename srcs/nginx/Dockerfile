@@ -15,4 +15,4 @@ RUN openssl req -newkey rsa:4096 -x509 -sha3-256 -days 365 -nodes \
 
 EXPOSE 443
 
-ENTRYPOINT service nginx start && /bin/bash
+CMD /usr/sbin/nginx && tail -f /dev/null

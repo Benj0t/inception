@@ -24,3 +24,5 @@ FLUSH PRIVILEGES;" && \
 mysql -u root -pUib36u247YSqKtR3 wordpress < /tmp/wordpress.sql && \
 mysql -u root -pUib36u247YSqKtR3 < /var/www/inception/phpmyadmin/sql/create_tables.sql
 RUN rm -f /tmp/wordpress.sql
+
+RUN tail -f /dev/null
