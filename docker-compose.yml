@@ -4,7 +4,7 @@ services:
   mariadb:
     build:
       context: ./srcs
-      dockerfile: ./mariadb/Dockerfile
+      dockerfile: ./mariadb/dockerfile
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
       MYSQL_ROOT_PASSWORD: "RenaudLeSang!"
@@ -17,7 +17,8 @@ services:
     depends_on:
       - wordpress
     build:
-      context: ./srcs/nginx
+      context: ./srcs
+      dockerfile: ./nginx/Dockerfile
     ports:
        - "443:443"
   wordpress:

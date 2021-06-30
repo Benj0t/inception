@@ -15,10 +15,10 @@ RUN mkdir /www &&\
 RUN mkdir /etc/nginx/ssl\
 	&& openssl req -batch -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
 
-COPY srcs/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/srcs/nginx.conf /etc/nginx/nginx.conf
 
-COPY srcs/index.html /www/index.html
+COPY nginx/srcs/index.html /www/index.html
 
-RUN mkdir /run/nginx
+#RUN mkdir /run/nginx
 
 ENTRYPOINT nginx -g "daemon off;"

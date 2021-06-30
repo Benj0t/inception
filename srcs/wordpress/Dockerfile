@@ -32,9 +32,8 @@ RUN adduser -D -g 'www' www
 RUN chown -R www:www /var/lib/nginx &&\
 	chown -R www:www /www
 
-COPY srcs/telegraf.conf /etc/telegraf/telegraf.conf
-COPY srcs/nginx.conf /etc/nginx/nginx.conf
-COPY srcs/wp-config.php /www
+COPY wordpress/srcs/nginx.conf /etc/nginx/nginx.conf
+COPY wordpress/srcs/wp-config.php /www
 
 RUN sed -i "s|;listen.owner\s*=\s*nobody|listen.owner = ${PHP_FPM_USER}|g" /etc/php7/php-fpm.d/www.conf\
 && sed -i "s|;listen.group\s*=\s*nobody|listen.group = ${PHP_FPM_GROUP}|g" /etc/php7/php-fpm.d/www.conf\
@@ -52,7 +51,7 @@ RUN sed -i "s|display_errors\s*=\s*Off|display_errors = ${PHP_DISPLAY_ERRORS}|i"
 && sed -i "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" /etc/php7/php.ini\
 && sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= ${PHP_CGI_FIX_PATHINFO}|i" /etc/php7/php.ini
 
-RUN mkdir /run/nginx
+#RUN mkdir /run/nginx
 
 EXPOSE 80
 
