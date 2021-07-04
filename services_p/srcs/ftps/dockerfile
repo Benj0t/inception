@@ -1,0 +1,22 @@
+FROM alpine:latest
+
+EXPOSE 20 21 21001
+
+RUN apk update\
+    && apk add vsftpd openssl telegraf
+
+COPY srcs/vsftpd.conf /etc/vsftpd.conf
+COPY srcs/telegraf.conf /etc/telegraf/telegraf.conf
+
+RUN openssl req -x509 -nodes -days 365 -subj "/C=FR/ST=92/L=PARIS/O=42/OU=psemsari/CN=ft_services" \
+    -newkey rsa:1024 -keyout /etc/vsftpd.pem -out /etc/vsftpd.pem
+
+RUN mkdir -p /srv/ftp/ \
+&& touch /srv/ftp/file \
+&& echo "ça marche" > /srv/ftp/file\
+&& adduser -D -h /srv/ftp ftp_user\
+&& echo "ftp_user:pw" | chpasswd\
+&& chown ftp_user /srv/ftp/\
+&& touch /var/ftplog
+
+ENTRYPOINT telegraf & vsftpd /etc/vsftpd.conf

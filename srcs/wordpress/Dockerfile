@@ -1,19 +1,53 @@
-FROM debian:buster
+FROM alpine:latest
 
-RUN apt update
-RUN apt upgrade -y
-RUN apt install wget -y
-RUN apt-get install apt-transport-https lsb-release ca-certificates -y
-RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" >> /etc/apt/sources.list.d/php.list
-RUN apt-get install php7.3 php7.3-opcache libapache2-mod-php7.3 php7.3-mysql php7.3-curl php7.3-json php7.3-gd  php7.3-intl php7.3-mbstring php7.3-xml php7.3-zip php7.3-fpm php7.3-readline -y
-RUN apt-get update
+ENV PHP_FPM_USER="www"
+ENV PHP_FPM_GROUP="www"
+ENV PHP_FPM_LISTEN_MODE="0660"
+ENV PHP_MEMORY_LIMIT="512M"
+ENV PHP_MAX_UPLOAD="50M"
+ENV PHP_MAX_FILE_UPLOAD="200"
+ENV PHP_MAX_POST="100M"
+ENV PHP_DISPLAY_ERRORS="On"
+ENV PHP_DISPLAY_STARTUP_ERRORS="On"
+ENV PHP_ERROR_REPORTING="E_COMPILE_ERROR\|E_RECOVERABLE_ERROR\|E_ERROR\|E_CORE_ERROR"
+ENV PHP_CGI_FIX_PATHINFO=0
 
-COPY ./web.tar.gz /tmp
-RUN mkdir -p /var/www
-RUN tar xzf /tmp/web.tar.gz -C /var/www
-RUN rm -f /tmp/web.tar.gz
+# Install PHP
+RUN apk update && \
+	apk add --no-cache php7-fpm php7-session php7-mcrypt php7-soap php7-openssl php7-gmp php7-pdo_odbc\
+	php7-json php7-dom php7-pdo php7-zip php7-mysqli php7-sqlite3 php7-apcu php7-pdo_pgsql\
+	php7-bcmath php7-gd php7-odbc php7-pdo_mysql php7-pdo_sqlite php7-gettext php7-xmlreader\
+	php7-xmlrpc php7-bz2 php7-iconv php7-pdo_dblib php7-curl php7-ctype php 
 
-COPY /php-fpm/inception.conf /etc/php/7.3/fpm/pool.d
+# Download wordpress
+ADD https://wordpress.org/wordpress-5.3.2.tar.gz .
 
-RUN service php7.3-fpm start && tail -f /dev/null
+# Install wordpress
+RUN tar -xvf wordpress-5.3.2.tar.gz && \
+	mv wordpress /www && \
+	rm -f wordpress-5.3.2.tar.gz
+
+RUN adduser -D -g 'www' www
+
+RUN chown -R www:www /www
+COPY wordpress/srcs/wp-config.php /www
+
+RUN sed -i "s|;listen.owner\s*=\s*nobody|listen.owner = ${PHP_FPM_USER}|.0g" /etc/php7/php-fpm.d/www.conf\
+&& sed -i "s|;listen.group\s*=\s*nobody|listen.group = ${PHP_FPM_GROUP}|g" /etc/php7/php-fpm.d/www.conf\
+&& sed -i "s|;listen.mode\s*=\s*0660|listen.mode = ${PHP_FPM_LISTEN_MODE}|g" /etc/php7/php-fpm.d/www.conf\
+&& sed -i "s|user\s*=\s*nobody|user = ${PHP_FPM_USER}|g" /etc/php7/php-fpm.d/www.conf\
+&& sed -i "s|group\s*=\s*nobody|group = ${PHP_FPM_GROUP}|g" /etc/php7/php-fpm.d/www.conf\
+&& sed -i "s|;log_level\s*=\s*notice|log_level = notice|g" /etc/php7/php-fpm.d/www.conf
+
+RUN sed -i "s|display_errors\s*=\s*Off|display_errors = ${PHP_DISPLAY_ERRORS}|i" /etc/php7/php.ini\
+&& sed -i "s|display_startup_errors\s*=\s*Off|display_startup_errors = ${PHP_DISPLAY_STARTUP_ERRORS}|i" /etc/php7/php.ini\
+&& sed -i "s|error_reporting\s*=\s*E_ALL & ~E_DEPRECATED & ~E_STRICT|error_reporting = ${PHP_ERROR_REPORTING}|i" /etc/php7/php.ini\
+&& sed -i "s|;*memory_limit =.*|memory_limit = ${PHP_MEMORY_LIMIT}|i" /etc/php7/php.ini\
+&& sed -i "s|;*upload_max_filesize =.*|upload_max_filesize = ${PHP_MAX_UPLOAD}|i" /etc/php7/php.ini\
+&& sed -i "s|;*max_file_uploads =.*|max_file_uploads = ${PHP_MAX_FILE_UPLOAD}|i" /etc/php7/php.ini\
+&& sed -i "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" /etc/php7/php.ini\
+&& sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= ${PHP_CGI_FIX_PATHINFO}|i" /etc/php7/php.ini
+
+EXPOSE 80
+
+ENTRYPOINT php-fpm7 --nodaemonize
