@@ -14,7 +14,7 @@ ENV PHP_CGI_FIX_PATHINFO=0
 
 # Install PHP
 RUN apk update && \
-	apk add --no-cache nginx php7-fpm php7-session php7-mcrypt php7-soap php7-openssl php7-gmp php7-pdo_odbc\
+	apk add --no-cache php7-fpm php7-session php7-mcrypt php7-soap php7-openssl php7-gmp php7-pdo_odbc\
 	php7-json php7-dom php7-pdo php7-zip php7-mysqli php7-sqlite3 php7-apcu php7-pdo_pgsql\
 	php7-bcmath php7-gd php7-odbc php7-pdo_mysql php7-pdo_sqlite php7-gettext php7-xmlreader\
 	php7-xmlrpc php7-bz2 php7-iconv php7-pdo_dblib php7-curl php7-ctype php 
@@ -29,13 +29,10 @@ RUN tar -xvf wordpress-5.3.2.tar.gz && \
 
 RUN adduser -D -g 'www' www
 
-RUN chown -R www:www /var/lib/nginx &&\
-	chown -R www:www /www
-
-COPY wordpress/srcs/nginx.conf /etc/nginx/nginx.conf
+RUN chown -R www:www /www
 COPY wordpress/srcs/wp-config.php /www
 
-RUN sed -i "s|;listen.owner\s*=\s*nobody|listen.owner = ${PHP_FPM_USER}|g" /etc/php7/php-fpm.d/www.conf\
+RUN sed -i "s|;listen.owner\s*=\s*nobody|listen.owner = ${PHP_FPM_USER}|.0g" /etc/php7/php-fpm.d/www.conf\
 && sed -i "s|;listen.group\s*=\s*nobody|listen.group = ${PHP_FPM_GROUP}|g" /etc/php7/php-fpm.d/www.conf\
 && sed -i "s|;listen.mode\s*=\s*0660|listen.mode = ${PHP_FPM_LISTEN_MODE}|g" /etc/php7/php-fpm.d/www.conf\
 && sed -i "s|user\s*=\s*nobody|user = ${PHP_FPM_USER}|g" /etc/php7/php-fpm.d/www.conf\
@@ -51,8 +48,6 @@ RUN sed -i "s|display_errors\s*=\s*Off|display_errors = ${PHP_DISPLAY_ERRORS}|i"
 && sed -i "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" /etc/php7/php.ini\
 && sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= ${PHP_CGI_FIX_PATHINFO}|i" /etc/php7/php.ini
 
-#RUN mkdir /run/nginx
-
 EXPOSE 80
 
-ENTRYPOINT php-fpm7 && nginx -g "daemon off;"
+ENTRYPOINT php-fpm7 --nodaemonize
