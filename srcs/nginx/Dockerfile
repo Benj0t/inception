@@ -1,24 +1,18 @@
-FROM alpine:latest
+FROM debian:buster
 
-EXPOSE 80
+RUN apt update
+RUN apt upgrade -y
+RUN apt install software-properties-common gettext-base dirmngr gnupg2 ca-certificates nginx openssl -y
 
-RUN apk update
+COPY ./srcs/nginx.conf /etc/nginx
+COPY ./srcs/inception.conf /etc/nginx/conf.d
+RUN rm -f /etc/nginx/conf.d/default.conf
+RUN chmod -R 600 /etc/nginx/conf.d/inception.conf
 
-RUN apk add nginx openssl
+RUN openssl req -newkey rsa:4096 -x509 -sha3-256 -days 365 -nodes \
+-subj "/C=FR/ST=Paris/L=Paris/O=42/OU=Student Projects/CN=inception" \
+-out /etc/ssl/private/inception.crt -keyout /etc/ssl/private/inception.key
 
-RUN adduser -D -g 'www' www
-
-RUN mkdir /www &&\
-	chown -R www:www /var/lib/nginx &&\
-	chown -R www:www /www
-
-RUN mkdir /etc/nginx/ssl\
-	&& openssl req -batch -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
-
-COPY nginx/srcs/nginx.conf /etc/nginx/nginx.conf
-
-COPY nginx/srcs/index.html /www/index.html
-
-#RUN mkdir /run/nginx
+EXPOSE 443
 
 ENTRYPOINT nginx -g "daemon off;"

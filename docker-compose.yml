@@ -12,40 +12,44 @@ services:
       MYSQL_PASSWORD: 'bemorenaud'
       MYSQL_DATABASE: 'testdb'
     networks:
-      - database
+      - my-network
+    ports:
+       - "3306:3306"
     volumes:
         - mariadb:/var/lib/mariadb
   nginx:
     depends_on:
       - wordpress
     build:
-      context: ./srcs
-      dockerfile: ./nginx/Dockerfile
+      context: ./srcs/nginx
+      dockerfile: ./Dockerfile
     networks:
-      - database
-      - server
+      - my-network
     ports:
       - "443:443"
+      - "80:80" #A remove apres le dn (login.42.fr) kahr krom redyrij en https. Uniquement sur les dn
+    volumes:
+      - ~/data/wp:/var/www/inception
   wordpress:
     depends_on:
       - mariadb
     build:
-      context: ./srcs
-      dockerfile: ./wordpress/Dockerfile
+      context: ./srcs/wordpress
+      dockerfile: ./Dockerfile
     networks:
-      - server
+      - my-network
     ports:
-      - 3306:3306
+      - "9000:9000"
     restart: always
+    volumes:
+      - ~/data/wp:/var/www/inception
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-volumes:
-     mariadb:
 networks:
-  database:
-    external: true
-  server:
-    external: true
+  my-network:
+    driver: bridge
+volumes:
+  mariadb:
