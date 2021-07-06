@@ -1,8 +1,15 @@
-#!/bin/sh
+# if [ ! -d "/var/lib/mysql/wordpress" ]; then 
+    
+#     mysql_install_db
+#     service mysql start
+    
+#     mysql -e "CREATE USER 'ben'@'localhost' identified by 'jamin';" &&\
+# 	mysql -e "CREATE DATABASE IF NOT EXISTS wordpress;" &&\
+# 	mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'ben'@'%' IDENTIFIED BY 'jamin';" &&\
+# 	mysql -e "FLUSH PRIVILEGES;"
+#     service mysql stop 
+# fi
+# mysql
 
-telegraf &
-mariadb-install-db -u root --datadir=/var/lib/mysql
-mysqld -u root --init-file=/tmp/init.sql & sleep 3
-mysql -u root wordpress < /tmp/config.sql
-pkill mysqld & sleep 3
-exec mysqld -u root
+mysql_install_db
+cd '/usr' ; /usr/bin/mysqld_safe --datadir='/home/mariadb'

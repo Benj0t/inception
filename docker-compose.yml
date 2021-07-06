@@ -3,20 +3,23 @@ version: '3.3'
 services:
   mariadb:
     build:
-      context: ./srcs
-      dockerfile: ./mariadb/dockerfile
+      context: ./srcs/mariadb
+      dockerfile: ./dockerfile
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
       MYSQL_ROOT_PASSWORD: "RenaudLeSang!"
       MYSQL_USER: 'bemoreau'
       MYSQL_PASSWORD: 'bemorenaud'
       MYSQL_DATABASE: 'testdb'
+      MARIA_LOGIN: "Ben"
+      MARIA_PASS: "jamin"
     networks:
       - my-network
     ports:
        - "3306:3306"
     volumes:
-        - mariadb:/var/lib/mariadb
+        - ~/data/db:/var/lib/mysql
+    restart: always
   nginx:
     depends_on:
       - wordpress

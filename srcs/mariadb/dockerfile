@@ -1,21 +1,16 @@
-FROM alpine
+FROM debian:buster
 
-RUN apk update\
-	&& apk add mysql mysql-client \
-	&& mkdir /run/mysqld
+RUN apt update -y
 
-COPY mariadb/srcs/config.sql /tmp/config.sql
+RUN apt install mariadb-server -y
 
-COPY mariadb/srcs/init.sql /tmp/init.sql
+COPY ./srcs/script.sh /
 
-COPY mariadb/srcs/my.cnf /etc/my.cnf
+COPY ./srcs/init.sql /
 
-COPY mariadb/srcs/script.sh /
+RUN chmod +x /script.sh
 
-RUN chmod u+x script.sh
+RUN service mysql start && mysql -u root -p < /init.sql
 
-ENTRYPOINT ./script.sh
-
-VOLUME /var/lib/mysql
-
-EXPOSE 3306
+CMD ["mysqld"]
+# ENTRYPOINT /script.sh
