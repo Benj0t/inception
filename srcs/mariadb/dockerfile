@@ -6,11 +6,6 @@ RUN apt install mariadb-server -y
 
 COPY ./srcs/script.sh /
 
-COPY ./srcs/init.sql /
-
 RUN chmod +x /script.sh
 
-RUN service mysql start && mysql -u root -p < /init.sql
-
-CMD ["mysqld"]
-# ENTRYPOINT /script.sh
+ENTRYPOINT /script.sh
