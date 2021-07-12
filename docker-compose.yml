@@ -30,7 +30,7 @@ services:
       - my-network
     ports:
       - "443:443"
-      - "80:80" #A remove apres le dn (login.42.fr) kahr krom redyrij en https. Uniquement sur les dn
+      - "80:80" #A remove apres le dn (login.42.fr) car on redirige en https. Uniquement sur les dn
     volumes:
       - ~/data/wp:/var/www/inception
   wordpress:

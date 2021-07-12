@@ -24,10 +24,9 @@ RUN adduser -D -g 'www' www
 ## Configuration
 RUN echo "listen = 9000" >> /etc/php7/php-fpm.d/www.conf
 RUN echo "access.log = /var/log/$pool.access.log" >> /etc/php7/php-fpm.d/www.conf
-RUN mkdir -p /var/www/inception 
+RUN mkdir -p /var/www/inception
 RUN chown -R www:www /var/www
 # RUN chown -R  www:www /var/www/inception/
-COPY srcs/wp-config.php /var/www/inception/
 RUN chmod 777 /var/www/inception/
 RUN mkdir -p /run/php/
 RUN chown www:www /var/run/php
