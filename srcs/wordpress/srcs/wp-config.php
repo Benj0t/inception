@@ -23,10 +23,10 @@
 define( 'DB_NAME', 'wordpress' );
 
 /** MySQL database username */
-define( 'DB_USER', 'root' );
+define( 'DB_USER', 'wordpress' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD', 'Uib36u247YSqKtR3' );
+define( 'DB_PASSWORD', 'j5ufPOh66pUP9unf' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'mariadb:3306' );
@@ -37,15 +37,14 @@ define( 'DB_CHARSET', 'utf8' );
 /** The Database Collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
 
-define( 'WP_ALLOW_REPAIR', true );  
+define( 'WP_ALLOW_REPAIR', true );
 
 /**#@+
  * Authentication Unique Keys and Salts.
  *
  * Change these to different unique phrases!
  * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
- * You can change these at 
- * any point in time to invalidate all existing cookies. This will force all users to have to log in again.
+ * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
  *
  * @since 2.6.0
  */
