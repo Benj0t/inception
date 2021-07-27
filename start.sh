@@ -9,4 +9,4 @@ wget https://wordpress.org/wordpress-5.3.2.tar.gz
 mv wordpress-5.3.2.tar.gz ~/data/wp/
 tar -zxvf ~/data/wp/wordpress-5.3.2.tar.gz -C ~/data/wp/
 rm ~/data/wp/wordpress-5.3.2.tar.gz
-cp srcs/wordpress/srcs/wp-config.php ~/data/wp/wordpress/wp-config.php
+cp srcs/wordpress/srcs/wp-config.php ~/data/wp/wp-config.php

@@ -13,6 +13,7 @@ FROM alpine:latest
 # ENV PHP_CGI_FIX_PATHINFO=0
 
 # Install PHP
+
 RUN apk update && \
 	apk add --no-cache php7-fpm php7-session php7-mcrypt php7-soap php7-openssl php7-gmp php7-pdo_odbc\
 	php7-json php7-dom php7-pdo php7-zip php7-mysqli php7-sqlite3 php7-apcu php7-pdo_pgsql\
@@ -32,6 +33,8 @@ RUN mkdir -p /run/php/
 RUN chown www:www /var/run/php
 
 WORKDIR /var/www/inception
+COPY /srcs/wp-config.php .
+RUN mkdir totototo
 
 EXPOSE 9000
 
