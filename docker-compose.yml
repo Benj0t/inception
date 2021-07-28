@@ -31,6 +31,8 @@ services:
     ports:
       - "443:443"
       - "80:80" #A remove apres le dn (login.42.fr) car on redirige en https. Uniquement sur les dn
+    extra_hosts:
+      - "bemoreau.42.fr:127.0.0.1"
     volumes:
       - ~/data/wp:/var/www/inception
   wordpress:
