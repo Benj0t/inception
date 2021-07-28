@@ -1,0 +1,21 @@
+Alpine Linux avec l’avant-dernière version stable, soit sous Debian Buster
+
+Deux utilisateurs seront présents dans votre base de données WordPress, l’un d’eux
+étant le compte Admin. L’username de l’Admin ne devra pas comporter "admin"
+ou "Admin" (exemples : admin, administrator, administrateur, administratrice,
+admin-123, etc. ...).
+
+Aucun mot de passe ne doit être présent dans vos Dockerfiles.
+L’utilisation des variables d’environnement est obligatoire.
+La mise en place d’un fichier .env afin de stocker vos variables
+d’environnement est fortement conseillée. Ce fichier devra être rangé
+à la racine de votre dossier srcs.
+Votre container NGINX doit être le seul point d’entrée de votre
+infrastructure par le port 443 uniquement en utilisant le protocole
+TLSv1.2 ou TLSv1.3.
+
+???
+Vos volumes seront disponibles dans le dossier /home/login/data de la
+machine hôte utilisant Docker. Bien entendu, remplacez le "login" par
+le vôtre.
+???
