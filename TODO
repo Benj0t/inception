@@ -1,3 +1,2 @@
-Move all logs into .env file
-
+Cant log mysql without pwd
 Create Makefile
